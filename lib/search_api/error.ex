@@ -13,19 +13,18 @@ defmodule SearchApi.Error do
       `SEARCHAPI_API_KEY`.
     * `:unknown_engine` — the engine id is not in `SearchApi.Engine.ids/0`.
       `:context` holds the id.
-    * `:missing_params` — required parameters were absent. `:context` holds
-      the list of missing names.
     * `:http_error` — SearchApi answered with a non-2xx status. `:status` and
       `:body` hold the response.
     * `:transport_error` — the request never completed (DNS, TLS, timeout).
       `:context` holds the underlying exception.
 
-  Validation errors (`:unknown_engine`, `:missing_params`) are raised before
-  any request goes out, so a malformed call never spends a credit.
+  Only `:unknown_engine` is decided locally. Parameter problems come back as
+  `:http_error`, because SearchApi validates parameters itself, describes them
+  better than a scraped catalog can, and does not charge for a rejected
+  request.
   """
 
-  @type reason ::
-          :missing_api_key | :unknown_engine | :missing_params | :http_error | :transport_error
+  @type reason :: :missing_api_key | :unknown_engine | :http_error | :transport_error
 
   @type t :: %__MODULE__{
           reason: reason(),

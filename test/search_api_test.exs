@@ -88,14 +88,27 @@ defmodule SearchApiTest do
                SearchApi.search(:nope, q: "x")
     end
 
-    test "rejects missing required params before making a request" do
-      stub(fn _conn -> flunk("should not have made a request") end)
+    test "leaves parameter validation to SearchApi, which does not charge for it" do
+      stub(fn conn ->
+        assert %{"engine" => "youtube_transcripts"} = params(conn)
+        json(conn, 400, %{"error" => "Missing required parameter video_id."})
+      end)
 
-      assert {:error, %SearchApi.Error{reason: :missing_params} = error} =
+      assert {:error, %SearchApi.Error{reason: :http_error, status: 400} = error} =
                SearchApi.search(:youtube_transcripts, [])
 
-      assert error.context == ["video_id"]
-      assert error.message =~ "https://www.searchapi.io/docs/youtube-transcripts"
+      assert error.message =~ "Missing required parameter video_id."
+    end
+
+    test "sends calls whose required params are conditional, rather than pre-rejecting them" do
+      # google_maps_place takes place_id OR data_id; both are documented
+      # "Required", so validating locally would reject every possible call.
+      stub(fn conn ->
+        assert %{"place_id" => "abc"} = params(conn)
+        json(conn, %{})
+      end)
+
+      assert {:ok, _} = SearchApi.search(:google_maps_place, place_id: "abc")
     end
 
     test "reports a missing api key" do

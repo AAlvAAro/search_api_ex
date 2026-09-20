@@ -16,3 +16,4 @@ search_api_ex-*.tar
 # Local secrets
 .env
 .env.*
+tools/.cache/

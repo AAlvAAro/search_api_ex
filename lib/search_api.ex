@@ -40,8 +40,8 @@ defmodule SearchApi do
       end
 
   Failures come back as `{:error, %SearchApi.Error{}}`, which carries a
-  `:reason` you can match on. Unknown engines and missing required parameters
-  are caught locally, before a request goes out, so a typo never costs a credit.
+  `:reason` you can match on. An unknown engine is caught locally; everything
+  else is SearchApi's own error, passed through with its status and body.
 
   ## Discovering engines
 
@@ -91,23 +91,20 @@ defmodule SearchApi do
         req_options: [receive_timeout: 90_000]
       )
 
-  Validation happens before the request:
+  An unknown engine is rejected without a request:
 
       iex> {:error, error} = SearchApi.search(:not_an_engine, q: "x")
       iex> error.reason
       :unknown_engine
 
-      iex> {:error, error} = SearchApi.search(:youtube_transcripts, [], api_key: "k")
-      iex> {error.reason, error.context}
-      {:missing_params, ["video_id"]}
+  Missing or invalid *parameters* are SearchApi's call, not this library's —
+  see `SearchApi.Engine.required_params/1` if you want to check first.
   """
   @spec search(atom() | String.t(), params(), opts()) :: {:ok, map()} | {:error, Error.t()}
   def search(engine, params \\ [], opts \\ []) do
     with {:ok, engine} <- fetch_engine(engine),
-         params = normalize(params),
-         :ok <- validate(engine, params),
          {:ok, api_key} <- api_key(opts) do
-      request(engine, params, api_key, opts)
+      request(engine, normalize(params), api_key, opts)
     end
   end
 
@@ -150,23 +147,6 @@ defmodule SearchApi do
   defp encode_value(v) when is_list(v), do: Enum.map_join(v, ",", &encode_value/1)
   defp encode_value(v) when is_binary(v), do: v
   defp encode_value(v), do: to_string(v)
-
-  defp validate(engine, params) do
-    case Enum.reject(Engine.required_params(engine), &Map.has_key?(params, &1.name)) do
-      [] ->
-        :ok
-
-      missing ->
-        names = Enum.map(missing, & &1.name)
-
-        {:error,
-         Error.new(
-           :missing_params,
-           "engine #{engine.id} requires #{Enum.join(names, ", ")}. See #{engine.docs_url}",
-           context: names
-         )}
-    end
-  end
 
   defp api_key(opts) do
     key =

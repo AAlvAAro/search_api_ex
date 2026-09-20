@@ -71,12 +71,14 @@ case SearchApi.search(:google, q: "elixir lang") do
 end
 ```
 
-Unknown engines and missing required parameters are caught locally, so a typo
-never spends a credit:
+An unknown engine is caught locally. Parameter problems are SearchApi's own
+error, passed through with its status and body — it validates parameters
+better than a scraped catalog can, and does not charge for a rejected request:
 
 ```elixir
 iex> SearchApi.search(:youtube_transcripts, [])
-{:error, %SearchApi.Error{reason: :missing_params, context: ["video_id"], ...}}
+{:error, %SearchApi.Error{reason: :http_error, status: 400,
+                          body: %{"error" => "Missing required parameter video_id."}}}
 ```
 
 There is also `SearchApi.search!/3`, which returns the body and raises.

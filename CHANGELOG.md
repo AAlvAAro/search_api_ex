@@ -16,8 +16,11 @@ Initial release.
   `json_schema/1`.
 - `SearchApi.Engine.json_schema/1`, emitting MCP-shaped `inputSchema` objects
   so the catalog can drive an MCP server directly.
-- Local validation of unknown engines and missing required parameters, before
-  a request is sent.
+- `tools/scrape_engines.py`, which regenerates the catalog from the docs.
+- Local validation of unknown engine ids, before a request is sent. Parameters
+  are deliberately not validated: SearchApi does not charge for a rejected
+  request, and many parameters are conditionally required in ways the
+  documentation does not express structurally.
 - `SearchApi.Error`, one struct for every failure mode.
 
 [0.1.0]: https://github.com/AAlvAAro/search_api_ex/releases/tag/v0.1.0

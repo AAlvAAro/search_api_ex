@@ -32,9 +32,9 @@ That is the entire integration. Three things make it this short:
   gets back, so no lookup table.
 - **Schema properties are parameter names.** The map the model produces is the
   map `search/3` takes, so no argument translation.
-- **Validation already happened.** An unknown engine or a missing required
-  parameter comes back as an error before a request goes out, so a
-  hallucinated tool call costs nothing.
+- **A hallucinated tool name costs nothing.** An unknown engine is rejected
+  locally, before any request. Bad *parameters* go to SearchApi, which
+  describes them well and does not charge for a rejected request.
 
 ## Choose a subset
 
@@ -74,8 +74,14 @@ end
 narrow(SearchApi.Engine.json_schema(:google), ~w(q gl hl location page))
 ```
 
-Keep every name in `schema.required`, or the model will be asked for a tool
-call the client rejects locally.
+Keep every name in `schema.required`, or the model will be asked to make a
+call SearchApi will reject.
+
+Note that `required` reflects SearchApi's documentation, with one correction:
+where the docs mark both halves of an either/or pair "Required" — Google Maps
+Place accepts `place_id` *or* `data_id`, never demanding both — the catalog
+demotes them to optional and leaves the condition in the description. Taking
+the docs literally would tell the model to invent the id it should omit.
 
 ## Per-tenant keys
 
@@ -100,9 +106,11 @@ def call_tool(name, arguments) do
       {:ok, JSON.encode!(body)}
 
     # The model can fix these itself — tell it what was wrong.
-    {:error, %SearchApi.Error{reason: reason} = error}
-    when reason in [:unknown_engine, :missing_params] ->
+    {:error, %SearchApi.Error{reason: :unknown_engine} = error} ->
       {:error, Exception.message(error)}
+
+    {:error, %SearchApi.Error{reason: :http_error, status: 400, body: body}} ->
+      {:error, "invalid parameters: #{inspect(body)}"}
 
     # These are the operator's problem. Do not invite a retry loop.
     {:error, %SearchApi.Error{} = error} ->

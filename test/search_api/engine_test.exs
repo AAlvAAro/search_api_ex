@@ -51,6 +51,26 @@ defmodule SearchApi.EngineTest do
     assert Engine.search("zzzznope") == []
   end
 
+  # Regression guard for the catalog. SearchApi's docs mark both halves of an
+  # either/or pair "Required"; taking that literally makes a schema that asks a
+  # model for a value it must omit, and once made every call look invalid.
+  # tools/scrape_engines.py demotes these -- this fails if a rescrape loses it.
+  test "params that are only conditionally required are not marked required" do
+    for {id, param} <- [
+          {:google_maps_place, "data_id"},
+          {:google_maps_photos, "data_id"},
+          {:google_maps_reviews, "data_id"},
+          {:ebay_product, "product_id"},
+          {:google_product_page, "product_token"},
+          {:airbnb, "bounding_box"},
+          {:google_flights, "return_date"},
+          {:google_trends, "q"}
+        ] do
+      names = id |> Engine.fetch!() |> Engine.required_params() |> Enum.map(& &1.name)
+      refute param in names, "#{id}.#{param} is conditional and must not be required"
+    end
+  end
+
   describe "json_schema/1" do
     test "produces an MCP-shaped input schema" do
       schema = Engine.json_schema(:google)

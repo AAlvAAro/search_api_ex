@@ -7,14 +7,14 @@
   "params": [
    {
     "name": "q",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Location",
     "doc": "This parameter is used for the location you want to search for on Airbnb. Optional when bounding_box is provided."
    },
    {
     "name": "bounding_box",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Location",
     "doc": "This parameter is used to specify the bounding box for the search. The format is [[lat,long],[lat,long]]. The first coordinate is the top-right corner of the bounding box, and the second coordinate is the bottom-left corner of the bounding box. Optional when q is provided. If both are passed, the bounding_box parameter takes precedence, and q should be within the bounding box."
@@ -675,7 +675,7 @@
    {
     "name": "variant_prices",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Variants",
     "doc": "Set this parameter to true to include the price of each product variant. Enabling it may increase the response time. Some products include variant prices by default, even without this parameter."
    }
@@ -2128,14 +2128,14 @@
    {
     "name": "web_search",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Web Search",
     "doc": "Set to true to use ChatGPT with web search. ChatGPT runs a live web search and answers with cited sources, turning the request into a ChatGPT search API. The pages the answer cites are returned in reference_links, and the full ranked set of pages ChatGPT retrieved is returned in web_results. ChatGPT may also search on its own initiative, so these can appear without this parameter. response_metadata.is_web_search_performed always reports whether a search actually ran."
    },
    {
     "name": "expand_entities",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Expand Entities",
     "doc": "Set to true to expand each knowledge-entity card in the answer into a rich detail card with a description, titled sections, related entities (\"Key Areas\" / \"Nearby Landmarks\"), inline images, and reference links, returned under each card's details. Adds latency since each entity triggers an extra fetch."
    }
@@ -2356,14 +2356,14 @@
   "params": [
    {
     "name": "item_id",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "This parameter specifies the id of the eBay Item you want to retrieve data for. It is optional when product_id is present. An item in eBay is a live listing (one seller’s offer) identified by an item_id. If the listing has ended or the item is no longer available, the request may automatically fall back to the corresponding product page."
    },
    {
     "name": "product_id",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "This parameter specifies the id of the eBay Product you want to retrieve data for. It is optional when item_id is present. Both can be used together if you want an specific item of said product, but the item page takes precedence. A product in eBay is a catalog record (canonical description of the thing) identified by an ePID, that can have multiple items from different sellers. For example a product Smartphone Brand X Model Y (with its specifications for hardware, battery, etc.) with its multiple items (with different sellers, prices, shipping, conditions, etc.). A product page shows information about the product and might contain information from one its items."
@@ -2406,7 +2406,7 @@
   "params": [
    {
     "name": "q",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "This parameter specifies your search query. It accepts any term or phrase you'd typically input in eBay search. This parameter is optional when the parameter category_id is present. The results will include only products containing all specified words, but you can refine your search by using: Commas and parentheses to get products that include any of the terms (e.g., (ring,earrings,necklace)). You can have multiple sets (e.g., (blue,red)(t-shirt,trousers), which would return products that include (blue or red) and (t-shirt or trousers)."
@@ -2498,7 +2498,7 @@
    {
     "name": "include_related_results",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "When set to true, the API returns eBay's \"Results matching fewer words\" items under a separate related_results key for queries that have no exact matches. Defaults to false and returns an error when no exact matches are found."
    },
@@ -3390,14 +3390,14 @@
    },
    {
     "name": "outbound_date",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Filters",
     "doc": "Defines the outbound date. The date format is YYYY-MM-DD. Note: Not required if flight_type set to multi_city."
    },
    {
     "name": "return_date",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Filters",
     "doc": "Defines the return date. The date format is YYYY-MM-DD. Note: Not required if flight_type set to one_way or multi_city."
@@ -3412,7 +3412,7 @@
    {
     "name": "exclude_basic_economy",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "Set to true to exclude Basic Economy fares. Supported only when travel_class is economy. Google Flights offers this filter for flights within the United States, its territories and Canada. Other routes return the same results as without it. Booking options still list every fare the airline sells, including Basic Economy."
    },
@@ -3433,21 +3433,21 @@
    {
     "name": "show_cheapest_flights",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "Set to true to show the cheapest flights. By default, best flights are shown."
    },
    {
     "name": "show_hidden_flights",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "Set to true to show hidden flights."
    },
    {
     "name": "expanded_search",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "Set to true together with show_hidden_flights and/or show_cheapest_flights to retrieve more results, which may result in longer request processing times. It has no effect on its own."
    },
@@ -3672,7 +3672,7 @@
    {
     "name": "exclude_basic_economy",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "Set to true to exclude Basic Economy fares. Supported only when travel_class is economy. Google Flights offers this filter for flights within the United States, its territories and Canada. Other routes return the same results as without it."
    },
@@ -4357,7 +4357,7 @@
    {
     "name": "expanded_search",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Hotel Filters",
     "doc": "Set to true to fetch per-OTA pricing for vacation rental properties. When a property is classified as vacation_rental, the default response only includes limited booking offers. With this parameter enabled, full OTA price comparison (e.g., Booking.com, Expedia, Hotels.com, Agoda, etc.) is returned in featured_offers and all_offers."
    },
@@ -5171,14 +5171,14 @@
   "params": [
    {
     "name": "place_id",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "This parameter is a unique identifier for locations on Google, including businesses, landmarks, and more. It can be obtained using the Google Maps API and is used to access detailed information about a place. For example, a place_id look like ChIJhRwB-yFawokR5Phil-QQ3zM. More details about place_id can be found in the Google Maps Place ID documentation. Note: The place_id parameter is not required if data_id parameter is being used."
    },
    {
     "name": "data_id",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "This parameter is a unique identifier for locations on Google, including businesses, landmarks, and more. It can be obtained using the Google Maps API and is used to access detailed information about a place. For example, a data_id look like 0x89c25a21fb011c85:0x33df10e49762f8e4. Note: The data_id parameter is not required if place_id parameter is being used."
@@ -5207,14 +5207,14 @@
   "params": [
    {
     "name": "place_id",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "This parameter is a unique identifier for locations on Google Maps, including businesses, landmarks, and more. It can be obtained using the Google Maps API and is used to access detailed information about a place. For example, a place_id look like ChIJhRwB-yFawokR5Phil-QQ3zM. More details about place_id can be found in the Google Maps Place ID documentation. Note: The place_id parameter is not required if data_id parameter is being used."
    },
    {
     "name": "data_id",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "This parameter is a unique identifier for locations on Google Maps, including businesses, landmarks, and more. It can be obtained using the Google Maps API and is used to access detailed information about a place. For example, a data_id look like 0x89c25a21fb011c85:0x33df10e49762f8e4. Note: The data_id parameter is not required if place_id parameter is being used."
@@ -5243,14 +5243,14 @@
   "params": [
    {
     "name": "place_id",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "This parameter is a unique identifier for locations on Google Maps, including businesses, landmarks, and more. It can be obtained using the Google Maps API and is used to access detailed information about a place. For example, a place_id look like ChIJhRwB-yFawokR5Phil-QQ3zM. More details about place_id can be found in the Google Maps Place ID documentation. Note: The place_id parameter is not required if data_id parameter is being used."
    },
    {
     "name": "data_id",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "This parameter is a unique identifier for locations on Google Maps, including businesses, landmarks, and more. It can be obtained using the Google Maps API and is used to access detailed information about a place. For example, a data_id look like 0x89c25a21fb011c85:0x33df10e49762f8e4. Note: The data_id parameter is not required if place_id parameter is being used."
@@ -5647,7 +5647,7 @@
    {
     "name": "scholar",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "Parameter controls the inclusion of scholarly results. Set to true to include scholarly results. Default value is false."
    },
@@ -6010,14 +6010,14 @@
   "params": [
    {
     "name": "product_id",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "Parameter defines the product_id (catalog ID) of the product. You can find this value in the product_id field from Google Shopping API responses. Note: this parameter is not required if product_token or prds is used."
    },
    {
     "name": "product_token",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "Parameter defines the product_token you want to search. You can find these values in JSON responses from Google Shopping API. Note: this parameter is not required if product_id or prds is used."
@@ -6587,21 +6587,21 @@
    {
     "name": "is_on_sale",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "Filters results to show only products that are currently on sale. Set to true to show only discounted items. Can be combined with is_small_business, is_free_delivery, and sort_by for more refined searches. Note: If the shoprs parameter is provided, it takes priority and this parameter will be ignored."
    },
    {
     "name": "is_small_business",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "Filters results to show only products sold by small businesses. Set to true to show only small business sellers. Can be combined with is_on_sale, is_free_delivery, and sort_by for more refined searches. Note: If the shoprs parameter is provided, it takes priority and this parameter will be ignored."
    },
    {
     "name": "is_free_delivery",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "Filters results to show only products with free shipping available. Set to true to show only items that offer free shipping. Can be combined with is_on_sale, is_small_business, and sort_by for more refined searches. Note: If the shoprs parameter is provided, it takes priority and this parameter will be ignored."
    },
@@ -7103,7 +7103,7 @@
   "params": [
    {
     "name": "q",
-    "required": true,
+    "required": false,
     "type": "string",
     "group": "Search Query",
     "doc": "Parameter defines the search query. It can be either required or optional based on the data_type parameter: data_type=TIMESERIES - search query is required only if cat=0 (default). It is limited to 5 search queries that should be seperated by ,. For instance: Java,JavaScript,Python."
@@ -8338,14 +8338,14 @@
    {
     "name": "translate",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Languages",
     "doc": "Controls whether reviews are machine-translated. true (default): reviews from every original language are translated to language."
    },
    {
     "name": "language",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Languages",
     "doc": "Target language for machine-translated reviews. Only has effect when translate=true (default). Reviews from all languages are translated to this language. Check the full list of supported Tripadvisor languages. Defaults to en."
    },
@@ -8925,7 +8925,7 @@
    {
     "name": "only_available",
     "required": false,
-    "type": "boolean",
+    "type": "string",
     "group": "Filters",
     "doc": "When set to true, enables fallback behavior. The API first attempts to find a transcript matching your lang or transcript_name parameter. If no match is found, it returns the first available transcript instead of an error. Transcripts can still be filtered by transcript_type."
    }

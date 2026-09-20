@@ -44,19 +44,23 @@ Note that parameters SearchApi itself expects as JSON strings — Google Hotels'
 documentation shows. The conversions above are for Elixir ergonomics, not a
 translation layer.
 
-## Bad calls fail locally
+## Only the engine name is checked locally
 
-An unknown engine, or a missing required parameter, is rejected before a
-request goes out, so a typo does not spend a credit:
+An unknown engine is rejected before a request goes out:
 
 ```elixir
-iex> SearchApi.search(:youtube_transcripts, [])
-{:error, %SearchApi.Error{reason: :missing_params, context: ["video_id"]}}
+iex> SearchApi.search(:googel, q: "coffee")
+{:error, %SearchApi.Error{reason: :unknown_engine, context: "googel"}}
 ```
 
-Unknown *optional* parameters are passed straight through. SearchApi adds
-parameters faster than a client library can follow, and refusing them would
-make this library the bottleneck.
+Parameters are **not** checked. They are passed straight through and SearchApi
+decides, for two reasons. It does not charge for a rejected request, so
+checking locally saves nothing. And many parameters are conditionally
+required in ways a scraped catalog cannot express — Google Flights needs
+`return_date` only for round trips, Google Maps Place takes `place_id` *or*
+`data_id` — so a local check would reject calls the API accepts.
+
+`SearchApi.Engine.required_params/1` is there if you want to check anyway.
 
 ## Errors are one struct
 
